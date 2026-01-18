@@ -19,24 +19,18 @@ jobs:
       - name: Enable pnpm
         run: |
           corepack enable
-          corepack prepare pnpm@9 --activate
-
-      - name: Verify pnpm
-        run: pnpm --version
+          corepack prepare pnpm@9.14.4 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build app
-        run: pnpm run build
-
-      - name: Build AppImage
-        run: pnpm run dist
+      - name: Build AppImage (x64)
+        run: pnpm run electron:build:linux -- --x64
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload AppImage
         uses: actions/upload-artifact@v4
         with:
-          name: bolt-diy-linux-amd64-appimage
+          name: bolt-linux-amd64-appimage
           path: dist/*.AppImage
