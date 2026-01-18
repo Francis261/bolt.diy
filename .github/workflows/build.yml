@@ -7,20 +7,23 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest   # AMD64 runner
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Enable pnpm (FIX)
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Verify pnpm
+        run: pnpm --version
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -37,5 +40,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bolt-diy-linux-amd64-appimage
-          path: |
-            dist/*.AppImage
+          path: dist/*.AppImage
